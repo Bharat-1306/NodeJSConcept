@@ -1,0 +1,20 @@
+{
+  "name": "nodejsconcept",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Bharat-1306/NodeJSConcept.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Bharat-1306/NodeJSConcept/issues"
+  },
+  "homepage": "https://github.com/Bharat-1306/NodeJSConcept#readme",
+  "description": ""
+}
