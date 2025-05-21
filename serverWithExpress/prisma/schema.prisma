@@ -1,0 +1,76 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+// Generator Block : This specifies how Prisma should generate the client code.
+generator client {
+  provider = "prisma-client-js" // Generates Prisma Client for JavaScript/TypeScript
+  // output   = "../src/generated/prisma" // Optional: Custom output directory for the client
+}
+
+//Datasource Block : This defines the database connection details, such as the database type and connection URL.
+datasource db {
+  provider = "postgresql" // Database type (e.g., postgresql, mysql, sqlite, mongodb)
+  url      = env("DATABASE_URL") // Connection string from the .env file
+}
+
+// Data Model : This is where you define your database tables and their fields.
+
+model User {
+  id        String   @id @default(uuid()) // Unique identifier for the user
+  username  String   @unique
+  email     String?  @unique // Optional email field, must be unique
+  password  String
+  createdAt DateTime @default(now()) // Timestamp for when the user was created
+  updatedAt DateTime @updatedAt // Timestamp for when the user was last updated
+  products  Prouct[] // Relation to the Prouct model
+}
+
+//note : when adding belongs to relation in the product model we need to add the relation in the user model as well
+//Error validating field belongsTo in model Prouct: 
+// The relation field belongsTo on model Prouct is missing an opposite relation field on the model User. 
+// Either run - npx prisma format - or add it manually.
+
+model Prouct {
+  id          String    @id @default(uuid()) // Unique identifier for the user
+  createdAt   DateTime  @default(now()) // Timestamp for when the user was created
+  name        String
+  belongsToId String // here in the user it is id as string so we are using as string if number we use as number
+  belongsTo   User      @relation(fields: [belongsToId], references: [id]) // Relation to the User model
+  updates     Updates[]
+}
+
+enum UPDATE_STATUS {
+  IN_PROGRESS
+  SHIPPED
+  DEPRICATED
+}
+
+model Updates {
+  id        String        @id @default(uuid()) // Unique identifier for the user
+  createdAt DateTime      @default(now()) // Timestamp for when the user was created
+  updatedAt DateTime
+  title     String
+  body      String
+  status    UPDATE_STATUS @default(IN_PROGRESS) // Enum field with default value
+  version   String? // Optional version field
+  aset      String? // Optional asset field
+
+  productId   String // Unique identifier for the product
+  product     Prouct        @relation(fields: [productId], references: [id]) // Relation to the Prouct model
+  updatePoint UpdatePoint[]
+}
+
+model UpdatePoint {
+  id        String   @id @default(uuid()) // Unique identifier for the user
+  createdAt DateTime @default(now()) // Timestamp for when the user was created
+  updatedAt DateTime
+
+  name        String @db.VarChar(255)
+  description String
+
+  updatedId String // Unique identifier for the product
+  update    Updates @relation(fields: [updatedId], references: [id]) // Relation to the Prouct model
+}
